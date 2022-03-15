@@ -1,5 +1,7 @@
-# I am gonna make a random box to ramdomly choose who's gonna pay the dinner for all.
-# 저녁식사를 결제할 한 사람을 뽑는 랜덤박스를 만들어보았다.
+# This is written by myself applying the AI SCHOOL contents to comply with their copyright issues.
+# Purpose: To make a random box to ramdomly choose who's gonna pay the dinner for all.
+# 본 코드는 교육 내용을 응용하여 새롭게 작성되었습니다.
+# 목표: 저녁식사를 결제할 한 사람을 뽑는 랜덤박스를 만들어보기.
 
 import random
 import time
