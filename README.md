@@ -6,5 +6,5 @@
 
 저작권법을 준수하기 위해 이 레포지토리의 코드들은 강의 내용 및 프로젝트의 일부를 수정 및 응용하여 작성되었음을 알려드립니다.
 
-In accordance with the copyright rules, the content of this repository is based on the code from [Like Lion(멋쟁이 사자처럼)](https://www.likelion.net/), and modified as part of the project and e-learning contents of [AI SCHOOL](https://www.codelion.net/detail/kdt-ai-5th) of [Like Lion](https://www.likelion.net/)
+In accordance with the copyright rules, the content of this repository is based on the code from [Like Lion(멋쟁이 사자처럼)](https://www.likelion.net/), and modified as part of the project and e-learning contents of [AI SCHOOL](https://www.codelion.net/detail/kdt-ai-5th) of [Like Lion](https://www.likelion.net/).
 
