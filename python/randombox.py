@@ -35,5 +35,5 @@ for i in range(5):
     time.sleep(1)
     
 final_return = random.choice(list(set_names))
-print("The result is... " + final_return + "is chosen to pay the dinner. Clap clap clap!")
+print("The result is... " + final_return + " is chosen to pay the dinner. Clap clap clap!")
 print("The applicaion closed.")
