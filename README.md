@@ -1,6 +1,6 @@
 # LIKE LION AI SCHOOL
 
-🙋‍♀️ 안녕하세요. 멋쟁이사자처럼 AI SCHOOL 5기생 김나리입니다.
+🙋‍♀️ 안녕하세요.
 
 본 레포지토리는 [멋쟁이사자처럼](https://www.likelion.net/)에서 진행하는 [AI SCHOOL](https://www.codelion.net/detail/kdt-ai-5th)에 참가하면서(2022.03.14~2022.06.03(수료 예정)) 공부하는 내용을 아카이브하고 있습니다.
 
