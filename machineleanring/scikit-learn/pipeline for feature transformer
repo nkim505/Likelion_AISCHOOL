@@ -1,0 +1,88 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn import datasets, model_selection, linear_model
+from sklearn.metrics import mean_squared_error
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+# 1. Feature engineering & Feature selection (+ 데이터 읽어들이기 & Binary label 만들어주기)
+
+	# 데이터가 열이름이 있는 상태로 가야한다. 파이프라인에 알려줘야하기 때문에
+df_data = pd.read_excel('boston_house_data.xlsx', index_col=0)
+df_data.columns = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
+
+	# 데이터가 열이름이 있는 상태로 가야한다. 파이프라인에 알려줘야하기 때문에
+df_target = pd.read_excel('boston_house_target.xlsx', index_col=0)
+df_target.columns = ['Price']
+
+	# apply 통해서 price가 전체 가격 평균보다 높으면 1, 아니면 0으로 하는 열 만든다.
+mean_price = df_target['Price'].mean()
+df_target['Price'] = df_target['Price'].apply(lambda x : 1 if x > mean_price else 0)
+df_target.head()
+
+# 2. Train-Test split하기
+
+ # check: 윗단에서 categorical 열이 숫자형으로 바꿔져있는지 꼭 확인
+ # model_selection.train_test_split안에 np.array가 아닌 df 그대로 때려넣는다. (가능)
+x_train, x_test, y_train, y_test = model_selection.train_test_split(df_data, 
+                                                                    df_target, 
+                                                                    test_size=0.2, 
+                                                                    random_state=1004)
+
+# 3. Make Pipeline for feature-transformer (StandardScaler & OneHotEncoder)
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer # preprocessor 만들 때
+from sklearn.pipeline import Pipeline
+
+ # 숫자형 변수명을 리스트로 모으로 스케일링 인스턴스 생성
+ # 범주형은 원핫인코딩 인스턴스 생성해준다.
+
+numeric_features = list(df_data.columns)
+numeric_features.remove('CHAS')
+numeric_features.remove('RAD')
+numeric_transformer =StandardScaler()
+
+categorical_features = ['CHAS', 'RAD']
+categorical_transformer = OneHotEncoder(categories ='auto', handle_unknown='ignore')
+ #handle_unknown='ignore' 디폴트로 생각하기
+
+
+ # 전처리 도구들 준비하기 : preprocessor라는 이름으로 묶어서
+preprocessor = ColumnTransformer(
+    transformers=[ #(name, transformer, column(s))의 튜플들로 이루어진 리스트
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)])
+
+
+# 4. Pipeline usage - preprocessing-only (fit & transform) / 파이프라인 사용
+
+ # Pipeline안에 preprocessing 도구들'만' 넣어서 pipe를 만든다.
+ # model = Pipleline() 으로 해주는 방법에는 steps 안에 preprocessor이랑 model까지 들어간다.
+preprocessor_pipe = Pipeline(steps=[('preprocessor', preprocessor)]) # preprocessing-only
+preprocessor_pipe.fit(x_train) #전처리 도구들이 피팅된다
+
+x_train_transformed = preprocessor_pipe.transform(x_train)
+x_test_transformed = preprocessor_pipe.transform(x_test)
+ # 이제 트랜스폼 된 애들로 학습시키고, 테스트 하면 된다.
+
+ # 위에서 categorical_features 리스트에 포함시킨 열 중 숫자가 아닌 텍스트(문자열)로 이루어진 열이 있을 경우,
+ # .transform() 함수 실행 결과로 만들어진 변수의 타입이 np.array가 아닌 csr_matrix일 수 있습니다.
+ # 그 경우에는
+ # preprocessor_pipe.transform(x_train).todense() 이렇게 한다.
+
+ # 전처리 끝! 첫번째 행 확인해보기.
+ # 먼저 숫자형 변수 scaling 끝나고 이후로 one-hot인코딩 열로 정리되어 나옴.
+# x_train_transformed[0]
+
+# 5. 파이프라인으로 바꿔준 데이터로 모델을 돌린다.
+from sklearn.ensemble import GradientBoostingClassifier
+
+model = GradientBoostingClassifier(n_estimators=200, random_state=0)
+model.fit(x_train_transformed, y_train) # <- x_train_transformed (not x_train)
+
+accuracy = model.score(x_test_transformed, y_test)
+print("model score:", round(accuracy, 4))
